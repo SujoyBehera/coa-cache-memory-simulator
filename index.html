@@ -803,7 +803,6 @@ input[type="range"] {
   <button class="tab-btn active" onclick="switchTab('sim-tab')">🎛️ Interactive Simulator</button>
   <button class="tab-btn" onclick="switchTab('comp-tab')">⚖️ Architecture Shootout (Side-by-Side)</button>
   <button class="tab-btn" onclick="switchTab('exp-tab')">🧪 Guided Lab Experiments</button>
-  <button class="tab-btn" onclick="switchTab('theory-tab')">📚 COA Theory & Viva Cheat-Sheet</button>
 </nav>
 
 <main>
@@ -1229,79 +1228,6 @@ input[type="range"] {
           </div>
           <button class="btn btn-primary exp-btn" onclick="runExperiment(4)">Load & Run Experiment 4</button>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- TAB 4: THEORY & VIVA CHEAT-SHEET -->
-  <div id="theory-tab" class="tab-panel">
-    <div class="theory-section">
-      <div class="theory-h2">Unit 5: Cache Memory Principles & Mathematical Foundations</div>
-      <p class="theory-p">
-        Cache memory exploits two dimensions of the <strong>Principle of Locality</strong>:
-        <br>1. <strong>Temporal Locality</strong>: A recently accessed memory location is highly likely to be accessed again in the near future (loops, stack frames).
-        <br>2. <strong>Spatial Locality</strong>: Locations with memory addresses near recently accessed items are likely to be referenced soon (sequential instructions, array elements).
-      </p>
-
-      <div style="background:var(--surface-alt); border:1px solid var(--border); border-radius:8px; padding:16px; margin-bottom:20px;">
-        <h3 style="color:var(--cyan); font-family:var(--font-display); font-size:14px; margin-bottom:8px;">Key Mathematical Formulas</h3>
-        <ul style="list-style:none; font-family:var(--font-mono); font-size:12px; line-height:2;">
-          <li>• Total Cache Lines (L) = Cache Capacity / Block Size (B)</li>
-          <li>• Number of Sets (S) = L / Associativity (Ways)</li>
-          <li>• Block Offset Bits (b) = log₂(Block Size in Bytes)</li>
-          <li>• Set Index Bits (s) = log₂(Number of Sets)</li>
-          <li>• Tag Bits (t) = Address Bits - s - b</li>
-          <li>• Hit Ratio (H) = Cache Hits / Total Accesses, Miss Ratio (M) = 1 - H</li>
-          <li>• Average Memory Access Time (AMAT) = T_hit + (1 - H) × T_penalty</li>
-        </ul>
-      </div>
-
-      <div class="theory-h2">The Three C's of Cache Misses (Mark Hill Classification)</div>
-      <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; margin-bottom:24px;">
-        <div style="background:var(--surface-alt); border:1px solid var(--border); border-radius:8px; padding:14px;">
-          <div style="color:#93c5fd; font-weight:700; margin-bottom:4px;">1. Compulsory Miss (Cold)</div>
-          <div style="font-size:12px; color:var(--text-muted);">First access to a block ever. Unavoidable unless prefetching is used. Even an infinite cache experiences compulsory misses.</div>
-        </div>
-        <div style="background:var(--surface-alt); border:1px solid var(--border); border-radius:8px; padding:14px;">
-          <div style="color:#fde047; font-weight:700; margin-bottom:4px;">2. Conflict Miss (Collision)</div>
-          <div style="font-size:12px; color:var(--text-muted);">Occurs in Direct or Set-Associative caches when multiple blocks map to the same set, even though empty lines exist elsewhere. Cured by increasing associativity.</div>
-        </div>
-        <div style="background:var(--surface-alt); border:1px solid var(--border); border-radius:8px; padding:14px;">
-          <div style="color:#fca5a5; font-weight:700; margin-bottom:4px;">3. Capacity Miss</div>
-          <div style="font-size:12px; color:var(--text-muted);">Occurs when the working set of the program exceeds the total physical size of the cache. Would still occur in a fully associative cache of the same size.</div>
-        </div>
-      </div>
-
-      <div class="theory-h2">Top 10 Viva-Voce Questions & Master Answers</div>
-
-      <div class="viva-card">
-        <div class="viva-q">Q1: What is the main difference between Direct Mapping and Set-Associative Mapping?</div>
-        <div class="viva-a">In Direct Mapping, each memory block maps to exactly ONE specific cache line (line = block mod L). If two active blocks map to the same line, they repeatedly evict each other (thrashing). In Set-Associative Mapping, each block maps to a set containing k lines; it can reside in ANY of the k lines, significantly reducing conflict misses.</div>
-      </div>
-
-      <div class="viva-card">
-        <div class="viva-q">Q2: Why doesn't a Fully Associative cache have any Set Index bits?</div>
-        <div class="viva-a">Because in Fully Associative mapping, there is only ONE set containing all cache lines (S=1, so log₂(1) = 0 index bits). Any block can reside anywhere in the cache. The address is partitioned strictly into Tag bits and Block Offset bits.</div>
-      </div>
-
-      <div class="viva-card">
-        <div class="viva-q">Q3: Why is LRU preferred over FIFO, and what is its hardware overhead?</div>
-        <div class="viva-a">LRU exploits temporal locality by preserving recently used blocks, avoiding FIFO's flaw of evicting heavily looped data simply because it arrived early. However, true LRU requires maintaining access timestamps or matrix counters for all ways on every access, which becomes prohibitively complex beyond 8-way associativity (leading to Pseudo-LRU implementations).</div>
-      </div>
-
-      <div class="viva-card">
-        <div class="viva-q">Q4: What is the role of the Valid Bit and the Dirty Bit?</div>
-        <div class="viva-a">The Valid Bit (V=1) indicates whether the cache line currently holds valid data copied from memory (initialized to 0 on CPU boot/flush). The Dirty Bit (D=1) is used in Write-Back caches to track whether the CPU has modified the data in cache without updating main memory yet; if D=1, the block must be written back to RAM upon eviction.</div>
-      </div>
-
-      <div class="viva-card">
-        <div class="viva-q">Q5: Compare Write-Through vs. Write-Back cache policies.</div>
-        <div class="viva-a">Write-Through updates both cache and main memory on every write hit, keeping RAM strictly coherent at the expense of heavy memory bus traffic (mitigated using write buffers). Write-Back writes only to the cache line and sets D=1; main memory is updated only when the line is evicted, minimizing bus traffic.</div>
-      </div>
-
-      <div class="viva-card">
-        <div class="viva-q">Q6: What is AMAT and how does increasing cache size affect it?</div>
-        <div class="viva-a">AMAT = T_hit + (1 - Hit Rate) × T_penalty. Increasing cache size increases Hit Rate (reducing misses), but can slightly increase Hit Time (T_hit) due to larger multiplexing circuitry and physical wire delays.</div>
       </div>
     </div>
   </div>
